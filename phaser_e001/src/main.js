@@ -12,11 +12,13 @@ function change_scene_sample() {
         }
 
         preload() {
-           this.load.audio('menu_mp3','asset/menu.mp3');
+            this.load.audio('menu_mp3', 'asset/menu.mp3');
+            this.load.image('splash_png', 'asset/splash.png');
         }
 
         create() {
             this.cameras.main.setBackgroundColor('#1e3c72');
+            this.add.image(400, 240, 'splash_png');
             const menu_mp3 = this.sound.add('menu_mp3');
             menu_mp3.play();
 
@@ -42,11 +44,15 @@ function change_scene_sample() {
         }
 
         preload() {
-            this.load.audio('game_mp3','asset/game.mp3');
+            this.load.audio('game_mp3', 'asset/game.mp3');
+            this.load.image('mainmenu_png', 'asset/menumap.png');
         }
 
         create() {
             this.cameras.main.setBackgroundColor('#3b721e');
+            this.add.image(0, 0, 'mainmenu_png')
+                .setOrigin(0, 0)
+                .setDisplaySize(800, 480);
             this.sound.add('game_mp3').play();
 
             const btn_back = this.add.text(250, 300, 'BACK', {
