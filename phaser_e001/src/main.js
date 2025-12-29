@@ -3,7 +3,39 @@ import Phaser from "Phaser"
 console.log(Phaser);
 //most_simple_phaser_scene_config();
 // add_text_scene();
-change_scene_sample();
+//change_scene_sample();
+test_update_scene();
+
+function test_update_scene() {
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        backgroundColor: '#DEDEDE',
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.image('ic_launcher', 'asset/ic_launcher.png');
+    }
+
+    function create() {
+        this.ic_launcher = this.add.image(0, 0, 'ic_launcher').setOrigin(0, 0);
+    }
+
+    function update(time, delta) {
+        console.log(time, delta);
+        console.info(this.scale.width, this.cameras.main.width);
+        this.ic_launcher.x += 100 * (delta / 1000);
+        this.ic_launcher.x = this.ic_launcher.x > 800 ? 0 : this.ic_launcher.x;
+    }
+}
 
 function change_scene_sample() {
     class SplashScene extends Phaser.Scene {
