@@ -2,9 +2,71 @@ import Phaser from "Phaser"
 
 console.log(Phaser);
 //most_simple_phaser_scene_config();
-add_text_scene();
+// add_text_scene();
+change_scene_sample();
 
-function add_text_scene(){
+function change_scene_sample() {
+    class SplashScene extends Phaser.Scene {
+        constructor() {
+            super({key: 'splash_scene'});
+        }
+
+        preload() {
+        }
+
+        create() {
+            const btn_start = this.add.text(250, 300, 'START GAME', {
+                font: '32px Arial',
+                fill: '#0f0',
+            });
+
+            btn_start.setInteractive();
+
+            btn_start.on('pointerdown', () => {
+                this.scene.start('game_scene');
+            });
+        }
+
+        update() {
+        }
+    }
+
+    class GameScene extends Phaser.Scene {
+        constructor() {
+            super({key: 'game_scene'});
+        }
+
+        preload() {
+        }
+
+        create() {
+            const btn_back = this.add.text(250, 300, 'BACK', {
+                font: '32px Arial',
+                fill: '#f00',
+            });
+
+            btn_back.setInteractive();
+
+            btn_back.on('pointerdown', () => {
+                this.scene.start('splash_scene');
+            });
+        }
+
+        update() {
+        }
+    }
+
+    const config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        scene: [SplashScene, GameScene]
+    };
+
+    new Phaser.Game(config);
+}
+
+function add_text_scene() {
     var config = {
         type: Phaser.AUTO,
         width: 800,
@@ -23,14 +85,14 @@ function add_text_scene(){
     }
 
     function create() {
-        const btn = this.add.text(250,300,'GAME TEXT',{
-            font:'32px Arial',
-            fill:'#0f0',
+        const btn = this.add.text(250, 300, 'GAME TEXT', {
+            font: '32px Arial',
+            fill: '#0f0',
         });
 
         btn.setInteractive();
 
-        btn.on('pointerdown',()=>{
+        btn.on('pointerdown', () => {
             console.log('BTN CLICK');
         });
     }
