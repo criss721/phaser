@@ -15,6 +15,8 @@ function change_scene_sample() {
         }
 
         create() {
+            this.cameras.main.setBackgroundColor('#1e3c72');
+
             const btn_start = this.add.text(250, 300, 'START GAME', {
                 font: '32px Arial',
                 fill: '#0f0',
@@ -40,6 +42,8 @@ function change_scene_sample() {
         }
 
         create() {
+            this.cameras.main.setBackgroundColor('#3b721e');
+
             const btn_back = this.add.text(250, 300, 'BACK', {
                 font: '32px Arial',
                 fill: '#f00',
