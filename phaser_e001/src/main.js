@@ -12,10 +12,13 @@ function change_scene_sample() {
         }
 
         preload() {
+           this.load.audio('menu_mp3','asset/menu.mp3');
         }
 
         create() {
             this.cameras.main.setBackgroundColor('#1e3c72');
+            const menu_mp3 = this.sound.add('menu_mp3');
+            menu_mp3.play();
 
             const btn_start = this.add.text(250, 300, 'START GAME', {
                 font: '32px Arial',
@@ -39,10 +42,12 @@ function change_scene_sample() {
         }
 
         preload() {
+            this.load.audio('game_mp3','asset/game.mp3');
         }
 
         create() {
             this.cameras.main.setBackgroundColor('#3b721e');
+            this.sound.add('game_mp3').play();
 
             const btn_back = this.add.text(250, 300, 'BACK', {
                 font: '32px Arial',
