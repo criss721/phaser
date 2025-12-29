@@ -23,9 +23,15 @@ function add_text_scene(){
     }
 
     function create() {
-        this.add.text(250,300,'GAME TEXT',{
+        const btn = this.add.text(250,300,'GAME TEXT',{
             font:'32px Arial',
             fill:'#0f0',
+        });
+
+        btn.setInteractive();
+
+        btn.on('pointerdown',()=>{
+            console.log('BTN CLICK');
         });
     }
 
