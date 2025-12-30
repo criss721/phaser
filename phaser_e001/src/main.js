@@ -4,7 +4,45 @@ console.log(Phaser);
 //most_simple_phaser_scene_config();
 // add_text_scene();
 //change_scene_sample();
-test_update_scene();
+// test_update_scene();
+get_user_input();
+
+function get_user_input() {
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        backgroundColor: '#DEDEDE',
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    new Phaser.Game(config);
+
+    function preload() {
+    }
+
+    function create() {
+        this.key = this.input.keyboard.createCursorKeys();
+        this.keyA = this.input.keyboard.addKey('A');
+
+        this.input.on('pointerdown', (pointer) => {
+            console.log(pointer.x, pointer.y);
+        });
+    }
+
+    function update(time, delta) {
+        if (this.key.left.isDown) {
+            console.log('key left down', this.key);
+        }
+        if (this.keyA.isDown) {
+            console.log('A');
+        }
+    }
+}
 
 function test_update_scene() {
     var config = {
