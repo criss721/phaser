@@ -6,7 +6,143 @@ console.log(Phaser);
 //change_scene_sample();
 // test_update_scene();
 // get_user_input();
-background_tile_add();
+// background_tile_add();
+add_sprite_sheet();
+
+function add_sprite_sheet() {
+    class GameScene extends Phaser.Scene {
+        constructor() {
+            super('GameScene');
+        }
+
+        preload() {
+            this.faces = [
+                'face_box_tiled',
+                'face_circle_tiled',
+                'face_hexagon_tiled',
+                'face_triangle_tiled'
+            ];
+
+            this.faces.forEach(key => {
+                this.load.spritesheet(key, `asset/${key}.png`, {
+                    frameWidth: 32,
+                    frameHeight: 32
+                });
+            });
+
+            this.load.spritesheet('banana_tiled', 'asset/banana_tiled.png', {
+                frameWidth: 33,
+                frameHeight: 35
+            });
+        }
+
+        create() {
+            this.faces.forEach(key => {
+
+                this.anims.create({
+                    key: `${key}_anim`,
+                    frames: this.anims.generateFrameNumbers(key, {
+                        start: 0,
+                        end: 1
+                    }),
+                    frameRate: 8,
+                    repeat: -1
+                });
+            });
+
+            this.input.on('pointerdown', (pointer) => {
+                console.log('x:', pointer.worldX, 'y:', pointer.worldY);
+                console.log('screen x:', pointer.x, 'screen y:', pointer.y);
+
+                // ✅ if we clicked on ANY interactive game object → do nothing
+                const clickedSprite = this.input.hitTestPointer(pointer)[0];
+                if (clickedSprite) {
+                    console.log(clickedSprite);
+                    return;
+                }
+
+                const randomFace = Phaser.Utils.Array.GetRandom(this.faces);
+                const sprite = this.add.sprite(pointer.worldX, pointer.worldY, randomFace);
+                sprite.setInteractive();
+                sprite.play(`${randomFace}_anim`, true);
+            });
+
+            this.anims.create({
+                key: 'circle_anim',
+                frames: this.anims.generateFrameNumbers('face_circle_tiled', {
+                    start: 0,
+                    end: 1
+                }),
+                frameRate: 8,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'banana_anim',
+                frames: this.anims.generateFrameNumbers('banana_tiled', {
+                    start: 0,
+                    end: 7
+                }),
+                frameRate: 8,
+                repeat: -1
+            });
+
+            const face_circle_tiled = this.add.sprite(200, 200, 'face_circle_tiled');
+            const banana_tiled = this.add.sprite(400, 200, 'banana_tiled');
+
+            banana_tiled.play('banana_anim');
+
+            face_circle_tiled.on('animationstart', (anim) => {
+                console.log('start:', anim.key);
+            });
+
+            face_circle_tiled.on('animationstop', (anim) => {
+                console.log('stopped:', anim.key);
+            });
+
+            face_circle_tiled.on('animationpause', (anim, frame) => {
+                console.log('paused:', anim.key, 'at frame', frame.index);
+            });
+
+            face_circle_tiled.on('animationresume', (anim, frame) => {
+                console.log('resumed:', anim.key, 'from frame', frame.index);
+            });
+
+            face_circle_tiled.on('animationcomplete', (anim) => {
+                console.log('done:', anim.key);
+            });
+
+            face_circle_tiled.setInteractive();
+
+            face_circle_tiled.on('pointerdown', () => {
+                console.log('CLICK');
+
+                if (face_circle_tiled.anims.isPlaying) {
+                    face_circle_tiled.anims.stop();
+                    // face_circle_tiled.anims.pause();
+                } else {
+                    face_circle_tiled.play('circle_anim', true);
+                    // face_circle_tiled.play('circle_anim');
+                    // face_circle_tiled.anims.resume();
+                }
+            });
+        }
+
+        update(time, delta) {
+            super.update(time, delta);
+        }
+    }
+
+    const config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        backgroundColor: '#888888',
+        scene: [GameScene]
+    };
+
+    const game = new Phaser.Game(config);
+}
 
 function background_tile_add() {
     class GameScene extends Phaser.Scene {
