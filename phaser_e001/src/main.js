@@ -5,7 +5,53 @@ console.log(Phaser);
 // add_text_scene();
 //change_scene_sample();
 // test_update_scene();
-get_user_input();
+// get_user_input();
+background_tile_add();
+
+function background_tile_add() {
+    class GameScene extends Phaser.Scene {
+        constructor() {
+            super('GameScene');
+        }
+
+        preload() {
+            this.load.image('grass_tile', 'asset/background_grass.png');
+        }
+
+        create() {
+            const gameWidth = this.sys.game.config.width;
+            const gameHeight = this.sys.game.config.height;
+
+            console.log(gameWidth, gameHeight);
+
+            const background = this.add.tileSprite(
+                gameWidth / 2,
+                gameHeight / 2,
+                gameWidth,
+                gameHeight,
+                'grass_tile'
+            );
+
+            this.backgroundTileSprite = background;
+
+            console.log('Background grass tile added successfully.');
+        }
+
+        update(time, delta) {
+            // super.update(time, delta);
+            this.backgroundTileSprite.tilePositionX += 0.05;
+        }
+    }
+
+    const config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        scene: [GameScene]
+    };
+
+    const game = new Phaser.Game(config);
+}
 
 function get_user_input() {
     var config = {
