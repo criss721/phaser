@@ -7,7 +7,136 @@ console.log(Phaser);
 // test_update_scene();
 // get_user_input();
 // background_tile_add();
-add_sprite_sheet();
+// add_sprite_sheet();
+sprite_move_drag_drop();
+
+function sprite_move_drag_drop() {
+    class GameScene extends Phaser.Scene {
+        constructor() {
+            super('GameScene');
+        }
+
+        preload() {
+            this.faces = [
+                'face_box_tiled',
+                'face_circle_tiled',
+                'face_hexagon_tiled',
+                'face_triangle_tiled'
+            ];
+
+            this.faces.forEach(key => {
+                this.load.spritesheet(key, `asset/${key}.png`, {
+                    frameWidth: 32,
+                    frameHeight: 32
+                });
+            });
+        }
+
+        create() {
+            this.faces.forEach(key => {
+
+                this.anims.create({
+                    key: `${key}_anim`,
+                    frames: this.anims.generateFrameNumbers(key, {
+                        start: 0,
+                        end: 1
+                    }),
+                    frameRate: 8,
+                    repeat: -1
+                });
+            });
+
+            var selectedSprite = null;
+
+            this.input.on('pointerdown', (pointer) => {
+                console.log('x:', pointer.worldX, 'y:', pointer.worldY);
+                console.log('screen x:', pointer.x, 'screen y:', pointer.y);
+
+                if (pointer.leftButtonDown()) {
+                    console.log('LEFT click');
+                }
+
+                if (pointer.rightButtonDown()) {
+                    console.log('RIGHT click');
+                }
+
+                if (pointer.middleButtonDown()) {
+                    console.log('MIDDLE click');
+                }
+
+                // ✅ if we clicked on ANY interactive game object → do nothing
+                const clickedSprite = this.input.hitTestPointer(pointer)[0];
+                if (clickedSprite || selectedSprite) {
+                    console.log(clickedSprite);
+                    if (selectedSprite) {
+                        move_sprite(this);
+                    }
+                    selectedSprite = clickedSprite;
+                    return;
+                }
+
+                add_new_sprite(this);
+
+                function add_new_sprite(scene) {
+                    const randomFace = Phaser.Utils.Array.GetRandom(scene.faces);
+                    const sprite = scene.add.sprite(pointer.worldX, pointer.worldY, randomFace);
+                    sprite.setInteractive();
+                    scene.input.setDraggable(sprite);
+                    sprite.play(`${randomFace}_anim`, true);
+                }
+
+                function move_sprite(scene) {
+                    const distance = Phaser.Math.Distance.Between(
+                        selectedSprite.x,
+                        selectedSprite.y,
+                        pointer.worldX,
+                        pointer.worldY
+                    );
+
+                    const SPEED = 0.3; // px per ms (tweak to taste)
+                    // const duration = Phaser.Math.Clamp(distance / SPEED, 100, 800);
+                    const duration = distance / SPEED;
+
+                    scene.tweens.add({
+                        targets: selectedSprite,
+                        x: pointer.worldX,
+                        y: pointer.worldY,
+                        duration: duration,
+                        ease: 'Sine.easeOut',
+
+                        onComplete: () => {
+                            selectedSprite = null;
+                        }
+                    });
+                }
+            });
+
+            this.input.on('dragstart', (pointer, gameObject) => {
+                selectedSprite = gameObject;
+                gameObject.setScale(1.1); // visual feedback
+            });
+
+            this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
+                gameObject.setPosition(dragX, dragY);
+            });
+
+            this.input.on('dragend', (pointer, gameObject) => {
+                gameObject.setScale(1.0);
+                selectedSprite = null;
+            });
+        }
+    }
+
+    const config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        backgroundColor: '#888888',
+        scene: [GameScene]
+    };
+
+    const game = new Phaser.Game(config);
+}
 
 function add_sprite_sheet() {
     class GameScene extends Phaser.Scene {
